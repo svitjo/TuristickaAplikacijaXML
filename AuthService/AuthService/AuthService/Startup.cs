@@ -1,3 +1,4 @@
+using AuthService.Service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -31,6 +32,15 @@ namespace AuthService
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AuthService", Version = "v1" });
+            });
+
+            services.Configure<MongoDBSettings>(Configuration.GetSection("MongoDB"));
+
+            services.AddSingleton<AuthMongoDB>(sp =>
+            {
+                var connectionString = Configuration.GetSection("MongoDB:ConnectionString").Value;
+                var databaseName = Configuration.GetSection("MongoDB:DatabaseName").Value;
+                return new AuthMongoDB(connectionString, databaseName);
             });
         }
 
