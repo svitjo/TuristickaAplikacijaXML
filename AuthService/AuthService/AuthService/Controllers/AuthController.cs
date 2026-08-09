@@ -1,8 +1,11 @@
-﻿using AuthService.DTO;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using AuthService.DTO;
 using AuthService.Model;
 using AuthService.Model.Enum;
 using AuthService.Repository;
 using AuthService.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AuthService.Controllers
@@ -67,6 +70,60 @@ namespace AuthService.Controllers
             return Ok(ToAuthResponse(user, token));
         }
 
+        [Authorize]
+        [HttpGet("profile")]
+        public async Task<ActionResult<UserResponse>> GetProfile()
+        {
+            var userId = GetCurrentUserId();
+            if (userId == null)
+            {
+                return Unauthorized(new { message = "Nevalidan token." });
+            }
+
+            var user = await _users.GetByIdAsync(userId.Value);
+            if (user == null)
+            {
+                return NotFound(new { message = "Korisnik nije pronadjen." });
+            }
+
+            return Ok(ToUserResponse(user));
+        }
+
+        [Authorize]
+        [HttpPut("profile")]
+        public async Task<ActionResult<UserResponse>> UpdateProfile([FromBody] UpdateProfileRequest request)
+        {
+            var userId = GetCurrentUserId();
+            if (userId == null)
+            {
+                return Unauthorized(new { message = "Nevalidan token." });
+            }
+
+            var updated = await _users.UpdateProfileAsync(
+                userId.Value,
+                request.FirstName?.Trim() ?? string.Empty,
+                request.LastName?.Trim() ?? string.Empty,
+                request.Biography?.Trim() ?? string.Empty,
+                request.Motto?.Trim() ?? string.Empty,
+                request.ProfileImage?.Trim() ?? string.Empty);
+
+            if (updated == null)
+            {
+                return NotFound(new { message = "Korisnik nije pronadjen." });
+            }
+
+            return Ok(ToUserResponse(updated));
+        }
+
+        private int? GetCurrentUserId()
+        {
+            var userIdValue = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                ?? User.FindFirstValue(JwtRegisteredClaimNames.Sub)
+                ?? User.FindFirstValue("sub");
+
+            return int.TryParse(userIdValue, out var userId) ? userId : null;
+        }
+
         private static AuthResponse ToAuthResponse(User user, string token)
         {
             return new AuthResponse
@@ -76,6 +133,23 @@ namespace AuthService.Controllers
                 UserName = user.UserName,
                 Email = user.Email,
                 UserRole = user.UserRole
+            };
+        }
+
+        private static UserResponse ToUserResponse(User user)
+        {
+            return new UserResponse
+            {
+                UserId = user.UserId,
+                UserName = user.UserName,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Biography = user.Biography,
+                Motto = user.Motto,
+                ProfileImage = user.ProfileImage,
+                UserRole = user.UserRole,
+                CreatedAt = user.CreatedAt
             };
         }
     }

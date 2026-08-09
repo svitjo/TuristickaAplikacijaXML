@@ -41,6 +41,24 @@ namespace AuthService.Repository
             return user;
         }
 
+        public async Task<User?> UpdateProfileAsync(int userId, string firstName, string lastName, string biography, string motto, string profileImage)
+        {
+            var update = Builders<User>.Update
+                .Set(u => u.FirstName, firstName)
+                .Set(u => u.LastName, lastName)
+                .Set(u => u.Biography, biography)
+                .Set(u => u.Motto, motto)
+                .Set(u => u.ProfileImage, profileImage);
+
+            return await _users.FindOneAndUpdateAsync(
+                u => u.UserId == userId,
+                update,
+                new FindOneAndUpdateOptions<User>
+                {
+                    ReturnDocument = ReturnDocument.After
+                });
+        }
+
         public async Task EnsureAdminExistsAsync()
         {
             var adminExists = await _users.Find(u => u.UserRole == UserRole.Administrator).AnyAsync();
@@ -63,3 +81,4 @@ namespace AuthService.Repository
         }
     }
 }
+
