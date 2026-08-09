@@ -60,6 +60,7 @@ namespace AuthService
                         ValidateIssuerSigningKey = true,
                         ValidIssuer = jwtIssuer,
                         ValidAudience = jwtAudience,
+                        RoleClaimType = System.Security.Claims.ClaimTypes.Role,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
                     };
                 });

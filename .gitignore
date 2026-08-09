@@ -21,3 +21,6 @@ project.fragment.lock.nuget.json
 *.log
 .env
 .env.local
+
+FE/touris-app/build/
+FE/touris-app/node_modules/
