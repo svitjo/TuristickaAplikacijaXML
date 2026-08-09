@@ -1,0 +1,23 @@
+## .NET
+**/bin/
+**/obj/
+**/.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.dll
+*.exe
+*.pdb
+*.cache
+project.lock.json
+project.fragment.lock.nuget.json
+
+## Node / React
+**/node_modules/
+**/build/
+**/dist/
+.DS_Store
+*.log
+.env
+.env.local

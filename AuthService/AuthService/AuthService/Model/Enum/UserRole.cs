@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace AuthService.Model.Enum
+﻿namespace AuthService.Model.Enum
 {
     public enum UserRole
     {
-        Administrator,
-        Vodic,
-        Turista
+        Administrator = 0,
+        Vodic = 1,
+        Turista = 2
     }
 }
