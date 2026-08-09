@@ -1,0 +1,14 @@
+{
+  "Routes": [
+    {"DownstreamPathTemplate":"/api/auth/{everything}","DownstreamScheme":"http","DownstreamHostAndPorts":[{"Host":"127.0.0.1","Port":5001}],"UpstreamPathTemplate":"/api/auth/{everything}","UpstreamHttpMethod":["GET","POST","PUT","DELETE","OPTIONS"]},
+    {"DownstreamPathTemplate":"/api/blogs/{everything}","DownstreamScheme":"http","DownstreamHostAndPorts":[{"Host":"127.0.0.1","Port":5002}],"UpstreamPathTemplate":"/api/blogs/{everything}","UpstreamHttpMethod":["GET","POST","PUT","DELETE","OPTIONS"]},
+    {"DownstreamPathTemplate":"/api/blogs","DownstreamScheme":"http","DownstreamHostAndPorts":[{"Host":"127.0.0.1","Port":5002}],"UpstreamPathTemplate":"/api/blogs","UpstreamHttpMethod":["GET","POST","OPTIONS"]},
+    {"DownstreamPathTemplate":"/api/tours/{everything}","DownstreamScheme":"http","DownstreamHostAndPorts":[{"Host":"127.0.0.1","Port":5003}],"UpstreamPathTemplate":"/api/tours/{everything}","UpstreamHttpMethod":["GET","POST","PUT","DELETE","OPTIONS"]},
+    {"DownstreamPathTemplate":"/api/tours","DownstreamScheme":"http","DownstreamHostAndPorts":[{"Host":"127.0.0.1","Port":5003}],"UpstreamPathTemplate":"/api/tours","UpstreamHttpMethod":["GET","POST","OPTIONS"]},
+    {"DownstreamPathTemplate":"/api/purchase/{everything}","DownstreamScheme":"http","DownstreamHostAndPorts":[{"Host":"127.0.0.1","Port":5004}],"UpstreamPathTemplate":"/api/purchase/{everything}","UpstreamHttpMethod":["GET","POST","PUT","DELETE","OPTIONS"]},
+    {"DownstreamPathTemplate":"/api/purchase","DownstreamScheme":"http","DownstreamHostAndPorts":[{"Host":"127.0.0.1","Port":5004}],"UpstreamPathTemplate":"/api/purchase","UpstreamHttpMethod":["GET","POST","OPTIONS"]},
+    {"DownstreamPathTemplate":"/api/execution/{everything}","DownstreamScheme":"http","DownstreamHostAndPorts":[{"Host":"127.0.0.1","Port":5005}],"UpstreamPathTemplate":"/api/execution/{everything}","UpstreamHttpMethod":["GET","POST","PUT","DELETE","OPTIONS"]},
+    {"DownstreamPathTemplate":"/api/execution","DownstreamScheme":"http","DownstreamHostAndPorts":[{"Host":"127.0.0.1","Port":5005}],"UpstreamPathTemplate":"/api/execution","UpstreamHttpMethod":["GET","POST","OPTIONS"]}
+  ],
+  "GlobalConfiguration": { "BaseUrl": "http://127.0.0.1:5000" }
+}

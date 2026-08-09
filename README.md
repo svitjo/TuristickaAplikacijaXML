@@ -35,3 +35,20 @@ Admin seed: `admin` / `admin123`
 ## Funkcionalnosti (ocena 6)
 
 1, 4, 5, 6 (bez markdown), 9, 10, 11, 14, 16, 17 + Docker + NoSQL + 3+ servisa + gateway.
+
+
+## Deploy (jedan URL)
+
+Render free (Docker all-in-one):
+
+1. MongoDB Atlas → Network Access → Allow from anywhere (`0.0.0.0/0`)
+2. Na Render-u kreiraj Web Service iz ovog repoa (`deploy/Dockerfile`) ili koristi `render.yaml`
+3. Env var: `MongoDB__ConnectionString` = tvoj Atlas URI
+4. Aplikacija je na jednom URL-u (FE + `/api` proxy)
+
+Lokalno unified:
+
+```bash
+# backendovi na 5000-5005, zatim:
+cd deploy && npm install && PORT=8080 node unified-server.js
+```

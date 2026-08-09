@@ -24,3 +24,5 @@ project.fragment.lock.nuget.json
 
 FE/touris-app/build/
 FE/touris-app/node_modules/
+deploy/node_modules/
+FE/touris-app/build/

@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: touris-app
+    runtime: docker
+    plan: free
+    dockerfilePath: ./deploy/Dockerfile
+    dockerContext: .
+    healthCheckPath: /
+    envVars:
+      - key: MongoDB__ConnectionString
+        sync: false
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Docker
