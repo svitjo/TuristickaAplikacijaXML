@@ -1,13 +1,17 @@
 import { useEffect, useMemo, useState } from 'react';
 import api from '../api';
 import { useAuth } from '../AuthContext';
+import { useToast } from '../ToastContext';
 import MapPicker from '../components/MapPicker';
+import Spinner from '../components/Spinner';
+import { getErrorMessage } from '../utils/apiErrors';
 
 const STATUS = ['Draft', 'Objavljena', 'Arhivirana'];
 const DIFF = ['Laka', 'Srednja', 'Teska'];
 
 export default function ToursPage() {
   const { user } = useAuth();
+  const { notifySuccess, notifyError, notifyInfo } = useToast();
   const isGuide = user?.userRole === 1 || user?.userRole === 0;
   const [mine, setMine] = useState([]);
   const [published, setPublished] = useState([]);
@@ -23,6 +27,8 @@ export default function ToursPage() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [savingKp, setSavingKp] = useState(false);
+  const [creatingTour, setCreatingTour] = useState(false);
+  const [loadingPage, setLoadingPage] = useState(true);
 
   const selectedTour = useMemo(
     () => mine.find((t) => t.id === selectedTourId) || null,
@@ -42,13 +48,21 @@ export default function ToursPage() {
   };
 
   useEffect(() => {
-    load().catch((err) => setError(err.response?.data?.message || 'Neuspesno ucitavanje tura'));
+    setLoadingPage(true);
+    load()
+      .catch((err) => {
+        const msg = getErrorMessage(err, 'Neuspesno ucitavanje tura');
+        setError(msg);
+        notifyError(msg);
+      })
+      .finally(() => setLoadingPage(false));
   }, [isGuide]);
 
   const createTour = async (e) => {
     e.preventDefault();
     setError('');
     setMessage('');
+    setCreatingTour(true);
     try {
       const { data } = await api.post('/api/tours', {
         name: form.name,
@@ -65,10 +79,16 @@ export default function ToursPage() {
         longitude: 20.4489,
         image: '',
       });
-      setMessage(`Tura "${data.name}" kreirana. Sada dodaj pocetnu tacku na mapi.`);
+      const msg = `Tura "${data.name}" kreirana. Sada dodaj pocetnu tacku na mapi.`;
+      setMessage(msg);
+      notifySuccess(msg);
       await load();
     } catch (err) {
-      setError(err.response?.data?.message || 'Kreiranje ture nije uspelo (uloguj se kao Vodic).');
+      const msg = getErrorMessage(err, 'Kreiranje ture nije uspelo (uloguj se kao Vodic).');
+      setError(msg);
+      notifyError(msg);
+    } finally {
+      setCreatingTour(false);
     }
   };
 
@@ -114,11 +134,13 @@ export default function ToursPage() {
       };
       const { data } = await api.post(`/api/tours/${selectedTourId}/keypoints`, payload);
       const count = data.keyPoints?.length || 0;
-      setMessage(
+      const okMsg =
         count === 1
           ? 'Pocetna tacka sacuvana. Dodaj jos bar jednu kljucnu tacku da mozes da objavis turu.'
-          : `Kljucna tacka sacuvana. Ukupno tacki: ${count}.`,
-      );
+          : `Kljucna tacka sacuvana. Ukupno tacki: ${count}.`;
+      setMessage(okMsg);
+      notifySuccess(okMsg);
+      if (count === 1) notifyInfo('Za objavu ture potrebne su bar 2 tacke.');
       setKp((prev) => ({
         ...prev,
         name: `Tacka ${count + 1}`,
@@ -127,12 +149,14 @@ export default function ToursPage() {
       }));
       await load();
     } catch (err) {
-      const msg =
-        err.response?.data?.message ||
-        (err.response?.status === 403
+      const msg = getErrorMessage(
+        err,
+        err.response?.status === 403
           ? 'Nemate dozvolu za izmenu ove ture.'
-          : 'Dodavanje tacke nije uspelo.');
+          : 'Dodavanje tacke nije uspelo.',
+      );
       setError(msg);
+      notifyError(msg);
     } finally {
       setSavingKp(false);
     }
@@ -144,9 +168,12 @@ export default function ToursPage() {
     try {
       await api.post(`/api/tours/${id}/publish`);
       setMessage('Tura je objavljena.');
+      notifySuccess('Tura je uspesno objavljena.');
       await load();
     } catch (err) {
-      setError(err.response?.data?.message || 'Objava nije uspela (potrebne su bar 2 tacke).');
+      const msg = getErrorMessage(err, 'Objava nije uspela (potrebne su bar 2 tacke).');
+      setError(msg);
+      notifyError(msg);
     }
   };
 
@@ -158,11 +185,25 @@ export default function ToursPage() {
         tourName: tour.name,
         price: tour.price,
       });
-      setMessage(`Tura "${tour.name}" dodata u korpu.`);
+      const msg = `Tura "${tour.name}" dodata u korpu.`;
+      setMessage(msg);
+      notifySuccess(msg);
     } catch (err) {
-      setError(err.response?.data?.message || 'Dodavanje u korpu nije uspelo.');
+      const msg = getErrorMessage(err, 'Dodavanje u korpu nije uspelo.');
+      setError(msg);
+      notifyError(msg);
     }
   };
+
+  if (loadingPage) {
+    return (
+      <section className="panel">
+        <div className="page-loading">
+          <Spinner label="Ucitavanje tura..." />
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="panel reveal">
@@ -206,7 +247,9 @@ export default function ToursPage() {
                 />
               </label>
             </div>
-            <button type="submit" className="btn-primary">Kreiraj draft turu</button>
+            <button type="submit" className="btn-primary" disabled={creatingTour}>
+              {creatingTour ? <Spinner label="Kreiranje..." /> : 'Kreiraj draft turu'}
+            </button>
           </form>
 
           <div className="surface">

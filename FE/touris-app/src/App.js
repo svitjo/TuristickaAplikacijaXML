@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes, Link } from 'react-router-dom';
 import { AuthProvider, useAuth } from './AuthContext';
+import { ToastProvider } from './ToastContext';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
@@ -94,7 +95,9 @@ function Home() {
 export default function App() {
   return (
     <AuthProvider>
-      <Shell />
+      <ToastProvider>
+        <Shell />
+      </ToastProvider>
     </AuthProvider>
   );
 }
