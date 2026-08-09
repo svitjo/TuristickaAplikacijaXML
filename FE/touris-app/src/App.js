@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes, Link } from 'react-router-dom';
+import { Navigate, NavLink, Route, Routes, Link } from 'react-router-dom';
 import { AuthProvider, useAuth } from './AuthContext';
 import { ToastProvider } from './ToastContext';
 import LoginPage from './pages/LoginPage';
@@ -24,28 +24,26 @@ function Shell() {
     <div className="app">
       <header className="topbar">
         <Link to="/" className="brand">Touris</Link>
-        <nav>
-          {isAuthenticated && (
-            <>
-              <Link to="/profile">Profil</Link>
-              <Link to="/blogs">Blogovi</Link>
-              <Link to="/tours">Ture</Link>
-              {user?.userRole === 2 && <Link to="/cart">Korpa</Link>}
-              {user?.userRole === 2 && <Link to="/simulator">Simulator</Link>}
-              {user?.userRole === 2 && <Link to="/execution">Izvodjenje</Link>}
-            </>
-          )}
-        </nav>
+        {isAuthenticated && (
+          <nav className="nav-pills" aria-label="Glavna navigacija">
+            <NavLink to="/profile">Profil</NavLink>
+            <NavLink to="/blogs">Blogovi</NavLink>
+            <NavLink to="/tours">Ture</NavLink>
+            {user?.userRole === 2 && <NavLink to="/cart">Korpa</NavLink>}
+            {user?.userRole === 2 && <NavLink to="/simulator">Simulator</NavLink>}
+            {user?.userRole === 2 && <NavLink to="/execution">Izvodjenje</NavLink>}
+          </nav>
+        )}
         <div className="userbox">
           {isAuthenticated ? (
             <>
-              <span>{user.userName} · {roleName}</span>
-              <button type="button" onClick={logout}>Odjavi se</button>
+              <span className="user-chip">{user.userName} · {roleName}</span>
+              <button type="button" className="btn-logout" onClick={logout}>Odjavi se</button>
             </>
           ) : (
             <>
-              <Link to="/login">Prijava</Link>
-              <Link to="/register">Registracija</Link>
+              <Link to="/login" className="nav-text-link">Prijava</Link>
+              <Link to="/register" className="btn-primary btn-compact">Registracija</Link>
             </>
           )}
         </div>
@@ -74,19 +72,21 @@ function Home() {
 
   return (
     <section className="hero-home">
-      <p className="eyebrow" style={{ color: 'rgba(247,250,248,0.8)' }}>Turisticka platforma</p>
-      <h1 className="brand-mark">Touris</h1>
-      <p>
-        Zdravo, {user?.userName}. Planiraj ture, zaprati vodice, kupi avanture i prati putanju
-        kroz simulator — sve na jednom mestu.
-      </p>
-      <div className="hero-actions">
-        <Link to="/tours" className="btn-primary" style={{ textDecoration: 'none', display: 'inline-block' }}>
-          {isGuide ? 'Kreiraj turu' : 'Pogledaj ture'}
-        </Link>
-        <Link to="/blogs" className="btn-secondary" style={{ textDecoration: 'none', display: 'inline-block' }}>
-          Otvori blogove
-        </Link>
+      <div className="hero-copy">
+        <p className="eyebrow light">Turisticka platforma</p>
+        <h1 className="brand-mark">Touris</h1>
+        <p>
+          Zdravo, {user?.userName}. Planiraj ture, zaprati vodice, kupi avanture i prati putanju
+          kroz simulator — sve na jednom mestu.
+        </p>
+        <div className="hero-actions">
+          <Link to="/tours" className="btn-primary btn-hero">
+            {isGuide ? 'Kreiraj turu' : 'Pogledaj ture'}
+          </Link>
+          <Link to="/blogs" className="btn-hero-secondary">
+            Otvori blogove
+          </Link>
+        </div>
       </div>
     </section>
   );
