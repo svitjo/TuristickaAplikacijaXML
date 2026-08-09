@@ -25,20 +25,36 @@ export default function RegisterPage() {
   };
 
   return (
-    <section className="panel">
-      <h1>Registracija</h1>
-      <form onSubmit={submit} className="form">
-        <input placeholder="Korisnicko ime" value={form.userName} onChange={(e) => setForm({ ...form, userName: e.target.value })} required />
-        <input type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
-        <input type="password" placeholder="Lozinka" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required />
-        <select value={form.userRole} onChange={(e) => setForm({ ...form, userRole: e.target.value })}>
-          <option value={2}>Turista</option>
-          <option value={1}>Vodic</option>
-        </select>
-        {error && <p className="error">{error}</p>}
-        <button type="submit">Registruj se</button>
-      </form>
-      <p>Vec imate nalog? <Link to="/login">Prijava</Link></p>
-    </section>
+    <div className="auth-wrap">
+      <section className="panel auth-panel">
+        <p className="eyebrow">Novi nalog</p>
+        <h1>Registracija</h1>
+        <p className="lede">Izaberite ulogu Vodic ili Turista i krenite.</p>
+        <form onSubmit={submit} className="form">
+          <label>
+            Korisnicko ime
+            <input value={form.userName} onChange={(e) => setForm({ ...form, userName: e.target.value })} required />
+          </label>
+          <label>
+            Email
+            <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
+          </label>
+          <label>
+            Lozinka
+            <input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required />
+          </label>
+          <label>
+            Uloga
+            <select value={form.userRole} onChange={(e) => setForm({ ...form, userRole: e.target.value })}>
+              <option value={2}>Turista</option>
+              <option value={1}>Vodic</option>
+            </select>
+          </label>
+          {error && <p className="error banner">{error}</p>}
+          <button type="submit" className="btn-primary">Registruj se</button>
+        </form>
+        <p className="muted">Vec imate nalog? <Link to="/login">Prijava</Link></p>
+      </section>
+    </div>
   );
 }

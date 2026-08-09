@@ -22,15 +22,25 @@ export default function LoginPage() {
   };
 
   return (
-    <section className="panel">
-      <h1>Prijava</h1>
-      <form onSubmit={submit} className="form">
-        <input placeholder="Korisnicko ime" value={form.userName} onChange={(e) => setForm({ ...form, userName: e.target.value })} required />
-        <input type="password" placeholder="Lozinka" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required />
-        {error && <p className="error">{error}</p>}
-        <button type="submit">Prijavi se</button>
-      </form>
-      <p>Nemate nalog? <Link to="/register">Registracija</Link></p>
-    </section>
+    <div className="auth-wrap">
+      <section className="panel auth-panel">
+        <p className="eyebrow">Dobrodosli nazad</p>
+        <h1>Prijava</h1>
+        <p className="lede">Udjite u Touris nalog i nastavite gde ste stali.</p>
+        <form onSubmit={submit} className="form">
+          <label>
+            Korisnicko ime
+            <input value={form.userName} onChange={(e) => setForm({ ...form, userName: e.target.value })} required />
+          </label>
+          <label>
+            Lozinka
+            <input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required />
+          </label>
+          {error && <p className="error banner">{error}</p>}
+          <button type="submit" className="btn-primary">Prijavi se</button>
+        </form>
+        <p className="muted">Nemate nalog? <Link to="/register">Registracija</Link></p>
+      </section>
+    </div>
   );
 }

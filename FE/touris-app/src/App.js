@@ -38,7 +38,7 @@ function Shell() {
         <div className="userbox">
           {isAuthenticated ? (
             <>
-              <span>{user.userName} ({roleName})</span>
+              <span>{user.userName} · {roleName}</span>
               <button type="button" onClick={logout}>Odjavi se</button>
             </>
           ) : (
@@ -69,10 +69,24 @@ function Shell() {
 
 function Home() {
   const { user } = useAuth();
+  const isGuide = user?.userRole === 1 || user?.userRole === 0;
+
   return (
-    <section className="panel">
-      <h1>Touris</h1>
-      <p>Dobrodosli, {user?.userName}. Koristite meni za blogove, ture, korpu, simulator i izvodjenje.</p>
+    <section className="hero-home">
+      <p className="eyebrow" style={{ color: 'rgba(247,250,248,0.8)' }}>Turisticka platforma</p>
+      <h1 className="brand-mark">Touris</h1>
+      <p>
+        Zdravo, {user?.userName}. Planiraj ture, zaprati vodice, kupi avanture i prati putanju
+        kroz simulator — sve na jednom mestu.
+      </p>
+      <div className="hero-actions">
+        <Link to="/tours" className="btn-primary" style={{ textDecoration: 'none', display: 'inline-block' }}>
+          {isGuide ? 'Kreiraj turu' : 'Pogledaj ture'}
+        </Link>
+        <Link to="/blogs" className="btn-secondary" style={{ textDecoration: 'none', display: 'inline-block' }}>
+          Otvori blogove
+        </Link>
+      </div>
     </section>
   );
 }

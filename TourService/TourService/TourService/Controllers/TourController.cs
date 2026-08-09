@@ -22,8 +22,8 @@ namespace TourService.Controllers
         {
             var userId = GetUserId();
             if (userId == null) return Unauthorized();
-            if (!User.IsInRole("Vodic") && !User.IsInRole("Administrator"))
-                return Forbid();
+            if (!IsGuideOrAdmin())
+                return BadRequest(new { message = "Samo Vodic moze da kreira ture." });
 
             var tour = await _repo.CreateAsync(new Tour
             {
@@ -33,7 +33,8 @@ namespace TourService.Controllers
                 Difficulty = request.Difficulty,
                 Tags = request.Tags ?? new List<string>(),
                 Status = TourStatus.Draft,
-                Price = 0
+                Price = 0,
+                KeyPoints = new List<KeyPoint>()
             });
             return Ok(tour);
         }
@@ -88,9 +89,12 @@ namespace TourService.Controllers
 
             var tour = await _repo.GetByIdAsync(id);
             if (tour == null) return NotFound();
-            if (tour.AuthorId != userId.Value) return Forbid();
+            if (tour.AuthorId != userId.Value)
+                return BadRequest(new { message = "Mozete menjati samo svoje ture." });
             if (tour.Status != TourStatus.Draft)
                 return BadRequest(new { message = "Kljucne tacke se dodaju samo na draft ture." });
+
+            tour.KeyPoints ??= new List<KeyPoint>();
 
             var kp = new KeyPoint
             {
@@ -181,5 +185,15 @@ namespace TourService.Controllers
                 ?? User.FindFirstValue("sub");
             return int.TryParse(value, out var id) ? id : null;
         }
+
+        private bool IsGuideOrAdmin()
+        {
+            return User.IsInRole("Vodic")
+                || User.IsInRole("Administrator")
+                || User.FindFirstValue(ClaimTypes.Role) is "Vodic" or "Administrator"
+                || User.Claims.Any(c => c.Type is "role" or "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+                    && (c.Value == "Vodic" || c.Value == "Administrator"));
+        }
     }
 }
+

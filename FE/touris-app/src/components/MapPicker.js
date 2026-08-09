@@ -1,4 +1,5 @@
-import { MapContainer, Marker, TileLayer, useMapEvents } from 'react-leaflet';
+import { useEffect } from 'react';
+import { MapContainer, Marker, TileLayer, useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -19,22 +20,50 @@ function ClickHandler({ onPick }) {
   return null;
 }
 
-export default function MapPicker({ latitude, longitude, onPick, markers = [], height = 360 }) {
-  const center = [latitude || 44.7866, longitude || 20.4489];
+function MapResizer() {
+  const map = useMap();
+  useEffect(() => {
+    const timer = setTimeout(() => map.invalidateSize(), 80);
+    return () => clearTimeout(timer);
+  }, [map]);
+  return null;
+}
+
+export default function MapPicker({
+  latitude,
+  longitude,
+  onPick,
+  markers = [],
+  height = 360,
+  mapKey = 'map',
+}) {
+  const centerLat = latitude ?? 44.7866;
+  const centerLng = longitude ?? 20.4489;
 
   return (
-    <div style={{ height, width: '100%', borderRadius: 8, overflow: 'hidden' }}>
-      <MapContainer center={center} zoom={13} style={{ height: '100%', width: '100%' }}>
+    <div className="map-shell" style={{ height }}>
+      <MapContainer
+        key={mapKey}
+        center={[centerLat, centerLng]}
+        zoom={13}
+        style={{ height: '100%', width: '100%' }}
+        scrollWheelZoom
+      >
         <TileLayer
           attribution='&copy; OpenStreetMap'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+        <MapResizer />
         <ClickHandler onPick={onPick} />
         {latitude != null && longitude != null && (
           <Marker position={[latitude, longitude]} icon={markerIcon} />
         )}
         {markers.map((m) => (
-          <Marker key={m.id || `${m.latitude}-${m.longitude}`} position={[m.latitude, m.longitude]} icon={markerIcon} />
+          <Marker
+            key={m.id || `${m.latitude}-${m.longitude}`}
+            position={[m.latitude, m.longitude]}
+            icon={markerIcon}
+          />
         ))}
       </MapContainer>
     </div>
