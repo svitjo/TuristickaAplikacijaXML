@@ -436,7 +436,14 @@ button:disabled {
   animation: riseIn 0.5s ease both;
 }
 
-.auth-panel h1 { font-size: 2.3rem; }
+.auth-panel h1 {
+  font-size: clamp(2.1rem, 5vw, 2.55rem);
+  font-weight: 800;
+}
+
+.auth-panel .lede {
+  margin-bottom: 0.35rem;
+}
 
 .field-error {
   color: var(--danger);
@@ -572,6 +579,7 @@ button.btn-secondary .spinner,
     order: 3;
     width: 100%;
     justify-content: flex-start;
+    border-radius: 18px;
   }
 
   .grid-2 { grid-template-columns: 1fr; }
