@@ -38,6 +38,9 @@ export default function LoginPage() {
       const msg = getErrorMessage(err, 'Prijava nije uspela.');
       setError(msg);
       notifyError(msg);
+      if (/pokrece|nedostupan|istekao/i.test(msg)) {
+        notifyError('Savet: sačekajte pola minuta posle otvaranja sajta (Render free cold start), pa kliknite ponovo.');
+      }
     } finally {
       setLoading(false);
     }

@@ -43,5 +43,6 @@ ENV MongoDB__ConnectionString=mongodb://localhost:27017
 EXPOSE 80
 COPY deploy/start.sh /start.sh
 COPY deploy/run-service.sh /run-service.sh
-RUN chmod +x /start.sh /run-service.sh
+COPY deploy/wait-and-nginx.sh /wait-and-nginx.sh
+RUN chmod +x /start.sh /run-service.sh /wait-and-nginx.sh
 CMD ["/start.sh"]

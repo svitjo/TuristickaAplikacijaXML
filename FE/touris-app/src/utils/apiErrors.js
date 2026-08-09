@@ -1,12 +1,43 @@
+function looksLikeHtml(value) {
+  if (typeof value !== 'string') return false;
+  const v = value.trim().toLowerCase();
+  return v.startsWith('<!doctype') || v.startsWith('<html') || v.includes('<center><h1>');
+}
+
+function stripHtml(value) {
+  return String(value)
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 export function getErrorMessage(err, fallback = 'Doslo je do greske. Pokusajte ponovo.') {
   const data = err?.response?.data;
   const status = err?.response?.status;
 
   if (!err?.response) {
-    return 'Nema veze sa serverom. Proverite internet ili pokusajte kasnije.';
+    if (err?.code === 'ECONNABORTED') {
+      return 'Zahtev je istekao. Server se mozda jos pokrece — sacekajte malo i pokusajte ponovo.';
+    }
+    return 'Nema veze sa serverom. Proverite internet ili sacekajte da se aplikacija pokrene.';
   }
 
-  if (typeof data === 'string' && data.trim()) return data;
+  // nginx / proxy HTML pages (502 Bad Gateway, etc.)
+  if (looksLikeHtml(data)) {
+    if (status === 502 || status === 503 || status === 504 || /bad gateway|service unavailable/i.test(data)) {
+      return 'Server se jos pokrece. Sacekajte 20–40 sekundi pa pokusajte ponovo.';
+    }
+    return 'Server je privremeno nedostupan. Pokusajte ponovo za trenutak.';
+  }
+
+  if (typeof data === 'string' && data.trim()) {
+    const text = stripHtml(data);
+    if (/bad gateway/i.test(text)) {
+      return 'Server se jos pokrece. Sacekajte 20–40 sekundi pa pokusajte ponovo.';
+    }
+    return text;
+  }
+
   if (data?.message) return data.message;
   if (data?.title && !data?.errors) return data.title;
 
@@ -22,9 +53,12 @@ export function getErrorMessage(err, fallback = 'Doslo je do greske. Pokusajte p
   }
 
   if (status === 401) return 'Pogresno korisnicko ime ili lozinka.';
-  if (status === 409) return 'Podaci su zauzeti. Probajte drugo korisnicko ime ili email.';
+  if (status === 409) return 'Korisnicko ime ili email su zauzeti.';
   if (status === 400) return 'Proverite unete podatke.';
   if (status === 403) return 'Nemate dozvolu za ovu akciju.';
+  if (status === 502 || status === 503 || status === 504) {
+    return 'Server se jos pokrece. Sacekajte 20–40 sekundi pa pokusajte ponovo.';
+  }
   if (status >= 500) return 'Server trenutno nije dostupan. Pokusajte za minut.';
 
   return fallback;

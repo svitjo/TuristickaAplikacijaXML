@@ -11,5 +11,8 @@ fi
 export PORT="${PORT:-80}"
 sed -i "s/listen .*;/listen ${PORT};/" /etc/nginx/conf.d/app.conf
 
+# Stagger .NET services a bit on small free instances
+export DOTNET_EnableDiagnostics=0
+
 echo "Starting Touris on PORT=${PORT}"
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
