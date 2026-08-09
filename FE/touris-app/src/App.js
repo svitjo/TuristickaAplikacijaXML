@@ -27,7 +27,7 @@ function Shell() {
         {isAuthenticated && (
           <nav className="nav-pills" aria-label="Glavna navigacija">
             <NavLink to="/profile">Profil</NavLink>
-            <NavLink to="/blogs">Blogovi</NavLink>
+            <NavLink to="/blogs" className={({ isActive }) => `nav-blogs${isActive ? ' active' : ''}`}>Blogovi</NavLink>
             <NavLink to="/tours">Ture</NavLink>
             {user?.userRole === 2 && <NavLink to="/cart">Korpa</NavLink>}
             {user?.userRole === 2 && <NavLink to="/simulator">Simulator</NavLink>}

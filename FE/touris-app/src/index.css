@@ -1,20 +1,21 @@
 :root {
-  --ink: #0d1f18;
-  --muted: #4a6358;
-  --brand: #083529;
-  --brand-2: #0f6b52;
-  --brand-soft: #e6f4ef;
-  --accent: #c89214;
-  --accent-soft: #fff4d8;
+  --ink: #10241c;
+  --muted: #4d6559;
+  --brand: #0a3d32;
+  --brand-2: #12805f;
+  --brand-soft: #dcefe8;
+  --accent: #e0a116;
+  --accent-ink: #3d2a00;
+  --accent-soft: #fff1c9;
   --surface: #ffffff;
-  --surface-2: #f4faf7;
-  --line: rgba(8, 53, 41, 0.12);
+  --surface-2: #eef6f2;
+  --line: rgba(10, 61, 50, 0.16);
   --danger: #b42318;
   --ok: #0b6b42;
-  --shadow: 0 14px 40px rgba(8, 53, 41, 0.1);
+  --shadow: 0 14px 40px rgba(10, 61, 50, 0.12);
   --radius: 16px;
-  --font-display: "Bricolage Grotesque", "Avenir Next", sans-serif;
-  --font-body: "Outfit", "Segoe UI", sans-serif;
+  --font-display: "Syne", "Avenir Next", sans-serif;
+  --font-body: "Figtree", "Segoe UI", sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -25,12 +26,14 @@ body {
   margin: 0;
   color: var(--ink);
   font-family: var(--font-body);
-  font-size: 16px;
-  line-height: 1.5;
+  font-size: 16.5px;
+  font-weight: 500;
+  line-height: 1.55;
+  letter-spacing: 0.01em;
   background:
-    radial-gradient(900px 420px at 0% 0%, rgba(15, 107, 82, 0.14), transparent 55%),
-    radial-gradient(700px 380px at 100% 0%, rgba(200, 146, 20, 0.12), transparent 50%),
-    linear-gradient(180deg, #f7fbf9 0%, #eef6f2 48%, #f8f5ee 100%);
+    radial-gradient(920px 440px at 0% 0%, rgba(18, 128, 95, 0.16), transparent 56%),
+    radial-gradient(720px 400px at 100% 0%, rgba(224, 161, 22, 0.14), transparent 52%),
+    linear-gradient(180deg, #f5fbf8 0%, #eaf4ef 45%, #f7f3e8 100%);
   background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
 }
